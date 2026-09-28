@@ -106,6 +106,7 @@ export interface Scenario {
   consequences: Record<string, ConsequenceOutcome>;
   feedback: ScenarioFeedback;
   retryScenarioId?: string;
+  timeoutActionId?: string;
   isActive: boolean;
 }
 

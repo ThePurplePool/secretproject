@@ -46,6 +46,7 @@ export function initDatabase() {
       consequences_json TEXT NOT NULL,
       feedback_json TEXT NOT NULL,
       retry_scenario_id TEXT,
+      timeout_action_id TEXT,
       is_active INTEGER NOT NULL DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -108,4 +109,8 @@ export function initDatabase() {
       FOREIGN KEY(scam_cluster_id) REFERENCES scam_clusters(id) ON DELETE SET NULL
     );
   `);
+
+  try {
+    db.exec('ALTER TABLE scenarios ADD COLUMN timeout_action_id TEXT');
+  } catch (_) {}
 }

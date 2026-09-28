@@ -92,16 +92,11 @@ export const ScenarioRunnerView: React.FC<ScenarioRunnerViewProps> = ({
     if (!scenario || activeConsequence) return;
     setIsPaused(true);
 
-    // Default to first critical danger or warning action on timeout
-    const fallbackAction = scenario.availableActions.find((a) => !a.isCorrect) || scenario.availableActions[0];
+    const actionToUse = scenario.timeoutActionId || '__TIMEOUT__';
     try {
-      const res = await api.submitDecision(scenario.id, fallbackAction.id, scenario.timeLimit);
-      setActiveConsequence({
-        ...res.consequence,
-        title: '⏱️ ВРЕМЯ НА РЕАКЦИЮ ИСТЕКЛО',
-        summary: 'Бездействие привело к реализации угрозы по умолчанию. ' + res.consequence.summary,
-      });
-      setIsSuccess(false);
+      const res = await api.submitDecision(scenario.id, actionToUse, scenario.timeLimit);
+      setActiveConsequence(res.consequence);
+      setIsSuccess(res.isSuccess);
       setActiveFeedback(res.feedback);
       setRetryId(res.retryScenarioId);
       onScenarioFinished(res.user);

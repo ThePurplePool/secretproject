@@ -5,43 +5,42 @@ import { v4 as uuidv4 } from 'uuid';
 
 export class ScenarioService {
   public static initSeedData() {
-    const countRow = db.prepare('SELECT COUNT(*) as count FROM scenarios').get() as { count: number };
-    if (countRow.count === 0) {
-      const insert = db.prepare(`
-        INSERT INTO scenarios (
-          id, title, category, difficulty, level, interface, time_limit,
-          starting_balance, sender_json, content_json, pressure_phrases_json,
-          available_actions_json, consequences_json, feedback_json, retry_scenario_id, is_active
-        ) VALUES (
-          ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-        )
-      `);
+    const insert = db.prepare(`
+      INSERT OR REPLACE INTO scenarios (
+        id, title, category, difficulty, level, interface, time_limit,
+        starting_balance, sender_json, content_json, pressure_phrases_json,
+        available_actions_json, consequences_json, feedback_json, retry_scenario_id,
+        timeout_action_id, is_active
+      ) VALUES (
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+      )
+    `);
 
-      const insertMany = db.transaction((scenarios: Scenario[]) => {
-        for (const s of scenarios) {
-          insert.run(
-            s.id,
-            s.title,
-            s.category,
-            s.difficulty,
-            s.level,
-            s.interface,
-            s.timeLimit,
-            s.startingBalance,
-            JSON.stringify(s.sender),
-            JSON.stringify(s.content),
-            JSON.stringify(s.pressurePhrases),
-            JSON.stringify(s.availableActions),
-            JSON.stringify(s.consequences),
-            JSON.stringify(s.feedback),
-            s.retryScenarioId || null,
-            s.isActive ? 1 : 0
-          );
-        }
-      });
+    const insertMany = db.transaction((scenarios: Scenario[]) => {
+      for (const s of scenarios) {
+        insert.run(
+          s.id,
+          s.title,
+          s.category,
+          s.difficulty,
+          s.level,
+          s.interface,
+          s.timeLimit,
+          s.startingBalance,
+          JSON.stringify(s.sender),
+          JSON.stringify(s.content),
+          JSON.stringify(s.pressurePhrases),
+          JSON.stringify(s.availableActions),
+          JSON.stringify(s.consequences),
+          JSON.stringify(s.feedback),
+          s.retryScenarioId || null,
+          s.timeoutActionId || null,
+          s.isActive ? 1 : 0
+        );
+      }
+    });
 
-      insertMany(SEED_SCENARIOS);
-    }
+    insertMany(SEED_SCENARIOS);
   }
 
   public static getAllScenarios(onlyActive = true): Scenario[] {
@@ -77,20 +76,52 @@ export class ScenarioService {
       throw new Error(`Scenario with id ${scenarioId} not found`);
     }
 
-    const action = scenario.availableActions.find((a) => a.id === actionId);
+    const isTimeout = actionId === '__TIMEOUT__' || actionId === 'timeout';
+    let action: ScenarioAction | undefined;
+
+    if (isTimeout) {
+      // If scenario specifies a timeout action (e.g. delete/ignore), use that
+      if (scenario.timeoutActionId) {
+        action = scenario.availableActions.find((a) => a.id === scenario.timeoutActionId);
+      }
+      // If not, find the safest action
+      if (!action) {
+        action = scenario.availableActions.find((a) => a.isCorrect) || scenario.availableActions[0];
+      }
+    } else {
+      action = scenario.availableActions.find((a) => a.id === actionId);
+    }
+
     if (!action) {
       throw new Error(`Action ${actionId} not found in scenario`);
     }
 
-    const consequence = scenario.consequences[action.consequenceId] || {
-      title: 'Действие выполнено',
-      chain: ['Действие зафиксировано системой'],
-      types: [],
-      simulatedLoss: 0,
-      summary: action.explanationNote,
-    };
+    let consequence: ConsequenceOutcome;
+    if (isTimeout) {
+      consequence = {
+        title: '⏱️ ВРЕМЯ ИСТЕКЛО — УГРОЗА НЕ СРАБОТАЛА',
+        chain: [
+          'Злоумышленник установил жесткий таймер и угрожал блокировкой счёта',
+          'Вы не поддались панике и не выполнили опасное действие (не открыли файл / не передали код)',
+          'Время вышло, но манипуляция оказалась пустым блефом',
+          'Устройство и баланс в полной безопасности',
+        ],
+        types: [],
+        simulatedLoss: 0,
+        summary:
+          'Вы выдержали дефицит времени и не поддались на шантаж. В реальной жизни мошенники рассчитывают на импульсивный клик под страхом блокировки. То, что вы не открыли файл, сохранило ваши деньги.',
+      };
+    } else {
+      consequence = scenario.consequences[action.consequenceId] || {
+        title: 'Действие выполнено',
+        chain: ['Действие зафиксировано системой'],
+        types: [],
+        simulatedLoss: 0,
+        summary: action.explanationNote,
+      };
+    }
 
-    const isSuccess = action.isCorrect;
+    const isSuccess = isTimeout ? true : action.isCorrect;
     const simulatedLoss = consequence.simulatedLoss || 0;
 
     // Record session
@@ -98,7 +129,7 @@ export class ScenarioService {
     db.prepare(`
       INSERT INTO scenario_sessions (id, user_id, scenario_id, chosen_action_id, time_taken_seconds, is_success, simulated_loss)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(sessionId, userId, scenarioId, actionId, timeTakenSeconds, isSuccess ? 1 : 0, simulatedLoss);
+    `).run(sessionId, userId, scenarioId, isTimeout ? 'timeout_safely_ignored' : actionId, timeTakenSeconds, isSuccess ? 1 : 0, simulatedLoss);
 
     // Update user balance
     db.prepare(`
@@ -128,7 +159,7 @@ export class ScenarioService {
           title = ?, category = ?, difficulty = ?, level = ?, interface = ?,
           time_limit = ?, starting_balance = ?, sender_json = ?, content_json = ?,
           pressure_phrases_json = ?, available_actions_json = ?, consequences_json = ?,
-          feedback_json = ?, retry_scenario_id = ?, is_active = ?
+          feedback_json = ?, retry_scenario_id = ?, timeout_action_id = ?, is_active = ?
         WHERE id = ?
       `).run(
         s.title,
@@ -145,6 +176,7 @@ export class ScenarioService {
         JSON.stringify(s.consequences),
         JSON.stringify(s.feedback),
         s.retryScenarioId || null,
+        s.timeoutActionId || null,
         s.isActive ? 1 : 0,
         s.id
       );
@@ -153,8 +185,9 @@ export class ScenarioService {
         INSERT INTO scenarios (
           id, title, category, difficulty, level, interface, time_limit,
           starting_balance, sender_json, content_json, pressure_phrases_json,
-          available_actions_json, consequences_json, feedback_json, retry_scenario_id, is_active
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          available_actions_json, consequences_json, feedback_json, retry_scenario_id,
+          timeout_action_id, is_active
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         s.id,
         s.title,
@@ -171,6 +204,7 @@ export class ScenarioService {
         JSON.stringify(s.consequences),
         JSON.stringify(s.feedback),
         s.retryScenarioId || null,
+        s.timeoutActionId || null,
         s.isActive ? 1 : 0
       );
     }
@@ -193,6 +227,7 @@ export class ScenarioService {
       consequences: JSON.parse(r.consequences_json),
       feedback: JSON.parse(r.feedback_json),
       retryScenarioId: r.retry_scenario_id,
+      timeoutActionId: r.timeout_action_id || undefined,
       isActive: r.is_active === 1,
     };
   }
