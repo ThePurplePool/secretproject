@@ -49,11 +49,21 @@ export const ScenarioRunnerView: React.FC<ScenarioRunnerViewProps> = ({
     setShowFeedbackModal(false);
     setIsPaused(false);
 
-    api.getScenario(scenarioId)
-      .then((data) => {
+    Promise.all([
+      api.getScenario(scenarioId),
+      api.startScenario(scenarioId).catch(() => null),
+    ])
+      .then(([data, session]) => {
         if (isMounted) {
           setScenario(data);
-          setSecondsRemaining(data.timeLimit);
+          let remaining = data.timeLimit;
+          if (session && session.startedAt) {
+            const elapsed = Math.floor((Date.now() - new Date(session.startedAt).getTime()) / 1000);
+            if (elapsed > 0 && elapsed < data.timeLimit) {
+              remaining = data.timeLimit - elapsed;
+            }
+          }
+          setSecondsRemaining(remaining);
           setIsLoading(false);
         }
       })

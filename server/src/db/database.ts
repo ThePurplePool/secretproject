@@ -18,8 +18,11 @@ export function initDatabase() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
-      username TEXT NOT NULL,
+      username TEXT NOT NULL UNIQUE,
       email TEXT,
+      password_hash TEXT,
+      salt TEXT,
+      session_token TEXT,
       initial_balance INTEGER NOT NULL DEFAULT 10000000,
       current_balance INTEGER NOT NULL DEFAULT 10000000,
       simulated_loss INTEGER NOT NULL DEFAULT 0,
@@ -55,10 +58,13 @@ export function initDatabase() {
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
       scenario_id TEXT NOT NULL,
-      chosen_action_id TEXT NOT NULL,
-      time_taken_seconds REAL NOT NULL,
-      is_success INTEGER NOT NULL,
+      chosen_action_id TEXT,
+      time_taken_seconds REAL,
+      is_success INTEGER DEFAULT 0,
       simulated_loss INTEGER NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'active',
+      started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      completed_at DATETIME,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
     );
@@ -110,7 +116,11 @@ export function initDatabase() {
     );
   `);
 
-  try {
-    db.exec('ALTER TABLE scenarios ADD COLUMN timeout_action_id TEXT');
-  } catch (_) {}
+  try { db.exec('ALTER TABLE scenarios ADD COLUMN timeout_action_id TEXT'); } catch (_) {}
+  try { db.exec('ALTER TABLE users ADD COLUMN password_hash TEXT'); } catch (_) {}
+  try { db.exec('ALTER TABLE users ADD COLUMN salt TEXT'); } catch (_) {}
+  try { db.exec('ALTER TABLE users ADD COLUMN session_token TEXT'); } catch (_) {}
+  try { db.exec("ALTER TABLE scenario_sessions ADD COLUMN status TEXT DEFAULT 'completed'"); } catch (_) {}
+  try { db.exec('ALTER TABLE scenario_sessions ADD COLUMN started_at DATETIME'); } catch (_) {}
+  try { db.exec('ALTER TABLE scenario_sessions ADD COLUMN completed_at DATETIME'); } catch (_) {}
 }

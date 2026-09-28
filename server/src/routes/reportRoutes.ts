@@ -8,11 +8,11 @@ router.post('/', (req: Request, res: Response) => {
   try {
     const {
       userId,
-      category,
-      phoneNumber,
+      category = req.body.scamType || 'phone_call',
+      phoneNumber = req.body.scammerPhone,
       telegramHandle,
       whatsappHandle,
-      url,
+      url = req.body.fakeUrl,
       paymentRequisites,
       description,
       screenshotUrl,

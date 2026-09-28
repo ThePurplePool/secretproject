@@ -11,6 +11,8 @@ import { VoiceCallView } from './views/VoiceCallView';
 import { FraudReportView } from './views/FraudReportView';
 import { ProfileView } from './views/ProfileView';
 import { AdminView } from './views/AdminView';
+import { AuthModal } from './components/AuthModal';
+import { CertificateVerifyModal } from './components/CertificateVerifyModal';
 import { Loader2 } from 'lucide-react';
 
 export function App() {
@@ -19,6 +21,8 @@ export function App() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isVerifyOpen, setIsVerifyOpen] = useState(false);
 
   // Load user profile on startup
   const loadUserProfile = async () => {
@@ -59,7 +63,30 @@ export function App() {
   return (
     <div className="min-h-screen bg-[#070d1e] text-slate-100 flex flex-col font-sans selection:bg-cyan-500/30">
       {/* Top Navbar */}
-      <Navbar currentView={currentView} onNavigate={setCurrentView} user={user} />
+      <Navbar
+        currentView={currentView}
+        onNavigate={setCurrentView}
+        user={user}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenVerifyCert={() => setIsVerifyOpen(true)}
+      />
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        currentUser={user}
+        onSuccess={(updatedUser, updatedCerts) => {
+          setUser(updatedUser);
+          setCertificates(updatedCerts);
+        }}
+      />
+
+      {/* Certificate Verification Modal */}
+      <CertificateVerifyModal
+        isOpen={isVerifyOpen}
+        onClose={() => setIsVerifyOpen(false)}
+      />
 
       {/* Persistent Virtual Balance Bar */}
       <VirtualBalanceBar user={user} />

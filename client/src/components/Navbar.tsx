@@ -6,9 +6,11 @@ interface NavbarProps {
   currentView: string;
   onNavigate: (view: string) => void;
   user: UserProfile | null;
+  onOpenAuth: () => void;
+  onOpenVerifyCert: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, user }) => {
+export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, user, onOpenAuth, onOpenVerifyCert }) => {
   return (
     <header className="sticky top-0 z-50 bg-[#070d1e]/90 backdrop-blur-md border-b border-slate-800 text-slate-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -85,26 +87,50 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, user })
               <AlertTriangle className="w-4 h-4" />
               Сообщить о скаме
             </button>
+
+            <button
+              onClick={onOpenVerifyCert}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-cyan-300 hover:bg-slate-800/50 transition-colors ml-1"
+            >
+              <Award className="w-3.5 h-3.5" />
+              <span>Проверка сертификата</span>
+            </button>
           </nav>
 
-          {/* User Profile & Level Badge */}
+          {/* User Profile & Auth */}
           <div className="flex items-center gap-3">
-            {user && (
-              <div
-                onClick={() => onNavigate('profile')}
-                className="cursor-pointer flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 transition-colors"
-              >
-                <div className="flex flex-col items-end">
-                  <span className="text-xs font-semibold text-slate-200">{user.username}</span>
-                  <div className="flex items-center gap-1 text-[11px] text-cyan-400 font-medium">
-                    <Award className="w-3 h-3" />
-                    <span>Уровень {user.level}: {user.levelName.replace('Anti-Scam ', '')}</span>
+            {user ? (
+              <div className="flex items-center gap-2">
+                <div
+                  onClick={() => onNavigate('profile')}
+                  className="cursor-pointer flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 transition-colors"
+                >
+                  <div className="flex flex-col items-end">
+                    <span className="text-xs font-semibold text-slate-200">{user.username}</span>
+                    <div className="flex items-center gap-1 text-[11px] text-cyan-400 font-medium">
+                      <Award className="w-3 h-3" />
+                      <span>Уровень {user.level}: {user.levelName.replace('Anti-Scam ', '')}</span>
+                    </div>
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 border border-slate-700">
+                    <User className="w-4 h-4" />
                   </div>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 border border-slate-700">
-                  <User className="w-4 h-4" />
-                </div>
+
+                <button
+                  onClick={onOpenAuth}
+                  className="hidden sm:inline-flex text-[11px] px-2 py-1 rounded bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+                >
+                  Вход
+                </button>
               </div>
+            ) : (
+              <button
+                onClick={onOpenAuth}
+                className="px-3.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-md transition-colors"
+              >
+                Войти
+              </button>
             )}
 
             <button

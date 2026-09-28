@@ -62,12 +62,15 @@ export class ScenarioService {
     userId: string,
     scenarioId: string,
     actionId: string,
-    timeTakenSeconds: number
+    timeTakenSeconds: number,
+    sessionId?: string
   ): {
     action: ScenarioAction;
     consequence: ConsequenceOutcome;
     isSuccess: boolean;
     simulatedLoss: number;
+    consequenceLoss: number;
+    consequenceChain: string[];
     feedback: any;
     retryScenarioId?: string;
   } {
@@ -124,12 +127,35 @@ export class ScenarioService {
     const isSuccess = isTimeout ? true : action.isCorrect;
     const simulatedLoss = consequence.simulatedLoss || 0;
 
-    // Record session
-    const sessionId = uuidv4();
-    db.prepare(`
-      INSERT INTO scenario_sessions (id, user_id, scenario_id, chosen_action_id, time_taken_seconds, is_success, simulated_loss)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(sessionId, userId, scenarioId, isTimeout ? 'timeout_safely_ignored' : actionId, timeTakenSeconds, isSuccess ? 1 : 0, simulatedLoss);
+    // Record or update session
+    const chosenAction = isTimeout ? 'timeout_safely_ignored' : actionId;
+    if (sessionId) {
+      const existing = db.prepare('SELECT id FROM scenario_sessions WHERE id = ?').get(sessionId);
+      if (existing) {
+        db.prepare(`
+          UPDATE scenario_sessions
+          SET
+            chosen_action_id = ?,
+            time_taken_seconds = ?,
+            is_success = ?,
+            simulated_loss = ?,
+            status = 'completed',
+            completed_at = CURRENT_TIMESTAMP
+          WHERE id = ?
+        `).run(chosenAction, timeTakenSeconds, isSuccess ? 1 : 0, simulatedLoss, sessionId);
+      } else {
+        db.prepare(`
+          INSERT INTO scenario_sessions (id, user_id, scenario_id, chosen_action_id, time_taken_seconds, is_success, simulated_loss, status, completed_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, 'completed', CURRENT_TIMESTAMP)
+        `).run(sessionId, userId, scenarioId, chosenAction, timeTakenSeconds, isSuccess ? 1 : 0, simulatedLoss);
+      }
+    } else {
+      const newSessionId = uuidv4();
+      db.prepare(`
+        INSERT INTO scenario_sessions (id, user_id, scenario_id, chosen_action_id, time_taken_seconds, is_success, simulated_loss, status, completed_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 'completed', CURRENT_TIMESTAMP)
+      `).run(newSessionId, userId, scenarioId, chosenAction, timeTakenSeconds, isSuccess ? 1 : 0, simulatedLoss);
+    }
 
     // Update user balance
     db.prepare(`
@@ -146,6 +172,8 @@ export class ScenarioService {
       consequence,
       isSuccess,
       simulatedLoss,
+      consequenceLoss: simulatedLoss,
+      consequenceChain: consequence.chain,
       feedback: scenario.feedback,
       retryScenarioId: scenario.retryScenarioId,
     };

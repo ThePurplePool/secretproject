@@ -39,6 +39,7 @@ console.log('✅ SQLite Database & 10 Seed Scenarios initialized.');
 
 // Mount API routes
 app.use('/api/user', userRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/scenarios', scenarioRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/voice', voiceRoutes);

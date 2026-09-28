@@ -11,14 +11,69 @@ function getUserId(): string {
   return uid;
 }
 
+function getToken(): string | null {
+  return localStorage.getItem('antiscam_token');
+}
+
+function setToken(token: string) {
+  localStorage.setItem('antiscam_token', token);
+}
+
+function getAuthHeaders(): Record<string, string> {
+  const token = getToken();
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  return headers;
+}
+
 export const api = {
   getUserId,
+  getToken,
+
+  async register(username: string, password?: string): Promise<{ user: UserProfile; certificates: Certificate[]; token: string }> {
+    const res = await fetch(`${API_BASE}/user/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Ошибка регистрации');
+    }
+    const data = await res.json();
+    if (data.token) setToken(data.token);
+    if (data.user?.id) localStorage.setItem('antiscam_user_id', data.user.id);
+    return data;
+  },
+
+  async login(username: string, password?: string): Promise<{ user: UserProfile; certificates: Certificate[]; token: string }> {
+    const res = await fetch(`${API_BASE}/user/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Ошибка входа');
+    }
+    const data = await res.json();
+    if (data.token) setToken(data.token);
+    if (data.user?.id) localStorage.setItem('antiscam_user_id', data.user.id);
+    return data;
+  },
+
+  logout() {
+    localStorage.removeItem('antiscam_token');
+    localStorage.removeItem('antiscam_user_id');
+  },
 
   async getProfile(username?: string): Promise<{ user: UserProfile; certificates: Certificate[] }> {
     const uid = getUserId();
     const query = new URLSearchParams({ userId: uid });
     if (username) query.append('username', username);
-    const res = await fetch(`${API_BASE}/user/profile?${query.toString()}`);
+    const res = await fetch(`${API_BASE}/user/profile?${query.toString()}`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error('Failed to load profile');
     return res.json();
   },
@@ -27,10 +82,21 @@ export const api = {
     const uid = getUserId();
     const res = await fetch(`${API_BASE}/user/auth`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify({ userId: uid, username }),
     });
     if (!res.ok) throw new Error('Failed to authenticate');
+    return res.json();
+  },
+
+  async startScenario(scenarioId: string): Promise<{ sessionId: string; startedAt: string; timeLimit: number }> {
+    const uid = getUserId();
+    const res = await fetch(`${API_BASE}/scenarios/${scenarioId}/start`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ userId: uid }),
+    });
+    if (!res.ok) throw new Error('Failed to start scenario session');
     return res.json();
   },
 
