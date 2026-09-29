@@ -1,0 +1,10 @@
+{
+  "name": "@antiscam/logging",
+  "version": "1.0.0",
+  "description": "Structured JSON logging for Anti-Scam Uzbekistan microservices",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  }
+}

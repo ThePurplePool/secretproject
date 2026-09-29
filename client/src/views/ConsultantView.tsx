@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { UserProfile, Certificate } from '../types';
 import { api } from '../services/api';
-import { Users, Award, Shield, Share2, Copy, Check, HeartHandshake, ArrowRight, UserCheck, FileText, CheckCircle2, HelpCircle } from 'lucide-react';
+import { Award, Check, ArrowRight, UserCheck, FileText, CheckCircle2 } from 'lucide-react';
 
 interface ConsultantViewProps {
   user: UserProfile | null;
@@ -61,12 +61,10 @@ export const ConsultantView: React.FC<ConsultantViewProps> = ({
       return;
     }
 
-    // Evaluate answers
-    const textAll = `${q1WhatHappened} ${q2SuspiciousSigns} ${q3ActionNeeded}`.toLowerCase();
+    const fullAnalysis = `${q1WhatHappened} ${q2SuspiciousSigns} ${q3ActionNeeded}`.toLowerCase();
     const isQualityAnalysis =
-      (textAll.includes('фишинг') || textAll.includes('поддел') || textAll.includes('троян') || textAll.includes('вирус') || textAll.includes('мошенни')) &&
-      (textAll.includes('домен') || textAll.includes('сертификат') || textAll.includes('sms') || textAll.includes('прав') || textAll.includes('ссылк') || textAll.includes('доступ') || textAll.includes('.apk')) &&
-      (textAll.includes('не вводить') || textAll.includes('удалить') || textAll.includes('запрет') || textAll.includes('закрыть') || textAll.includes('провер'));
+      (fullAnalysis.includes('домен') || fullAnalysis.includes('ссылк') || fullAnalysis.includes('сертификат') || fullAnalysis.includes('доступ') || fullAnalysis.includes('apk') || fullAnalysis.includes('sms')) &&
+      (fullAnalysis.includes('нельзя') || fullAnalysis.includes('проверить') || fullAnalysis.includes('запретить') || fullAnalysis.includes('банк') || fullAnalysis.includes('удалить'));
 
     const score = isQualityAnalysis ? 100 : 75;
 
@@ -88,33 +86,33 @@ export const ConsultantView: React.FC<ConsultantViewProps> = ({
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 space-y-10">
+    <div className="max-w-5xl mx-auto px-3 sm:px-6 py-4 sm:py-12 space-y-6 sm:space-y-10 font-sans text-[#191A1C]">
       {/* Top Banner */}
-      <div className="p-8 rounded-3xl bg-gradient-to-r from-amber-950/60 via-slate-900 to-indigo-950/60 border border-amber-800/50 shadow-2xl space-y-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950 border border-amber-700/80 text-amber-300 text-xs font-bold uppercase tracking-wider">
+      <div className="p-4 sm:p-8 rounded-lg bg-[#E7E1D6] border border-[#D8D2C5] space-y-3 sm:space-y-4">
+        <div className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-[#7A1F2B] font-semibold border-b border-[#D8D2C5] pb-1">
           <Award className="w-3.5 h-3.5" />
           <span>Уровень 3: Anti-Scam Consultant</span>
         </div>
 
-        <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-          От обучаемого — к Эксперту и Защитнику окружения
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-[#191A1C] tracking-tight">
+          От обучаемого — к эксперту и защитнику своего окружения
         </h1>
 
-        <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-          Главная идея платформы: человек перестаёт быть только жертвой или пассивным учеником. Получив статус Консультанта, вы разбираете реальные инциденты других людей и защищаете свою семью, коллег и друзей.
+        <p className="text-sm sm:text-base text-[#5C5854] max-w-2xl leading-relaxed">
+          Главная цель платформы: человек перестаёт быть только потенциальной жертвой. Получив статус Консультанта, вы разбираете реальные дилеммы коллег и родственников, помогая предотвратить финансовые потери.
         </p>
 
-        <div className="pt-2 flex flex-wrap items-center gap-4 text-xs text-amber-300/90 font-medium">
+        <div className="pt-2 flex flex-wrap items-center gap-4 text-xs font-mono text-[#191A1C]">
           <span className="flex items-center gap-1.5">
-            <Check className="w-4 h-4 text-amber-400" />
-            Разбор дилемм родственников и коллег
+            <Check className="w-4 h-4 text-[#465447]" />
+            Разбор дилемм коллег и близких
           </span>
           <span className="flex items-center gap-1.5">
-            <Check className="w-4 h-4 text-amber-400" />
-            Официальный статус Антискам-Консультанта
+            <Check className="w-4 h-4 text-[#465447]" />
+            Официальный статус Консультанта
           </span>
           <span className="flex items-center gap-1.5">
-            <Check className="w-4 h-4 text-amber-400" />
+            <Check className="w-4 h-4 text-[#465447]" />
             Защита минимум 5 человек в сообществе
           </span>
         </div>
@@ -122,22 +120,22 @@ export const ConsultantView: React.FC<ConsultantViewProps> = ({
 
       {/* Structured Audit Modal / Section (AC-CONSULT-03) */}
       {activeAuditCase && (
-        <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 border-2 border-amber-700/80 shadow-2xl space-y-5 animate-fadeIn">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-            <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
-              <FileText className="w-5 h-5" />
+        <div className="p-6 sm:p-8 rounded-lg bg-[#FAF8F5] border-2 border-[#7A1F2B] space-y-5 animate-fadeIn shadow-md">
+          <div className="flex items-center justify-between pb-3 border-b border-[#D8D2C5]">
+            <div className="flex items-center gap-2 text-[#7A1F2B] font-mono font-bold text-xs uppercase tracking-wider">
+              <FileText className="w-4 h-4" />
               <span>Структурированный письменный анализ консультанта (AC-CONSULT-03)</span>
             </div>
             <button
               onClick={() => setActiveAuditCase(null)}
-              className="text-xs text-slate-400 hover:text-white"
+              className="text-xs font-mono text-[#6B6661] hover:text-[#191A1C] cursor-pointer"
             >
               Закрыть форму
             </button>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs text-slate-300 space-y-1">
-            <span className="text-amber-300 font-bold uppercase tracking-wider block">Разбираемый кейс:</span>
+          <div className="p-4 rounded bg-[#E7E1D6] border border-[#D8D2C5] text-xs text-[#191A1C] space-y-1">
+            <span className="font-mono font-bold uppercase tracking-wider text-[#7A1F2B] block">Разбираемый кейс:</span>
             <p className="italic">
               {activeAuditCase === 'kamola'
                 ? '«Бухгалтер Камола: искала интернет-банк в поиске, антивирус ругается на сертификат, шеф торопит отправить платёж...»'
@@ -148,7 +146,7 @@ export const ConsultantView: React.FC<ConsultantViewProps> = ({
           {!auditResult ? (
             <form onSubmit={handleAuditSubmit} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-white block">
+                <label className="text-xs font-mono font-bold text-[#191A1C] uppercase tracking-wider block">
                   1. Что происходит в этой ситуации? (Суть атаки и психологическая уловка) *
                 </label>
                 <textarea
@@ -157,12 +155,12 @@ export const ConsultantView: React.FC<ConsultantViewProps> = ({
                   placeholder="Опишите, какую атаку предпринимают злоумышленники..."
                   value={q1WhatHappened}
                   onChange={(e) => setQ1WhatHappened(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 text-xs focus:border-amber-500 focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded bg-white border border-[#D8D2C5] text-[#191A1C] text-xs focus:border-[#7A1F2B] focus:outline-none"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-white block">
+                <label className="text-xs font-mono font-bold text-[#191A1C] uppercase tracking-wider block">
                   2. Какие признаки вас насторожили? (Технические и поведенческие Red Flags) *
                 </label>
                 <textarea
@@ -171,12 +169,12 @@ export const ConsultantView: React.FC<ConsultantViewProps> = ({
                   placeholder="Укажите конкретные признаки (домен, сертификат, опасные права доступа, спешка)..."
                   value={q2SuspiciousSigns}
                   onChange={(e) => setQ2SuspiciousSigns(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 text-xs focus:border-amber-500 focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded bg-white border border-[#D8D2C5] text-[#191A1C] text-xs focus:border-[#7A1F2B] focus:outline-none"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-white block">
+                <label className="text-xs font-mono font-bold text-[#191A1C] uppercase tracking-wider block">
                   3. Что конкретно должен сделать человек прямо сейчас? (Пошаговый алгоритм защиты) *
                 </label>
                 <textarea
@@ -185,27 +183,27 @@ export const ConsultantView: React.FC<ConsultantViewProps> = ({
                   placeholder="Инструкция для человека: чего категорически нельзя делать и как поступить правильно..."
                   value={q3ActionNeeded}
                   onChange={(e) => setQ3ActionNeeded(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 text-xs focus:border-amber-500 focus:outline-none"
+                  className="w-full px-3.5 py-2 rounded bg-white border border-[#D8D2C5] text-[#191A1C] text-xs focus:border-[#7A1F2B] focus:outline-none"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-xl font-bold text-xs bg-amber-600 hover:bg-amber-500 text-white shadow-lg transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3.5 rounded font-mono font-bold text-xs uppercase tracking-wider bg-[#7A1F2B] hover:bg-[#621822] text-white shadow-sm transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>ЗАВЕРШИТЬ ЭКСПЕРТИЗУ И ОТПРАВИТЬ СОВЕТ</span>
                 <Check className="w-4 h-4" />
               </button>
             </form>
           ) : (
-            <div className="p-5 rounded-2xl bg-slate-950 border border-emerald-800 space-y-3 animate-fadeIn text-center">
-              <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
-              <h4 className="text-base font-bold text-white">Экспертиза успешно зачтена (Оценка: {auditResult.score}%)</h4>
-              <p className="text-xs text-slate-300 max-w-lg mx-auto leading-relaxed">{auditResult.feedback}</p>
+            <div className="p-5 rounded bg-[#FAF8F5] border-2 border-[#465447] space-y-3 animate-fadeIn text-center">
+              <CheckCircle2 className="w-8 h-8 text-[#465447] mx-auto" />
+              <h4 className="text-base font-bold text-[#191A1C]">Экспертиза успешно зачтена (Оценка: {auditResult.score}%)</h4>
+              <p className="text-xs text-[#5C5854] max-w-lg mx-auto leading-relaxed">{auditResult.feedback}</p>
               <div className="pt-2">
                 <button
                   onClick={() => setActiveAuditCase(null)}
-                  className="px-6 py-2 rounded-xl bg-slate-800 text-white text-xs font-semibold hover:bg-slate-700"
+                  className="px-6 py-2 rounded font-mono text-xs font-semibold bg-[#191A1C] text-white hover:bg-[#7A1F2B] cursor-pointer"
                 >
                   Вернуться к списку
                 </button>
@@ -217,35 +215,34 @@ export const ConsultantView: React.FC<ConsultantViewProps> = ({
 
       {/* Consultant Specific Scenarios */}
       <div className="space-y-4">
-        <h2 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-          <Users className="w-5 h-5 text-amber-400" />
-          <span>Кейсы Консультанта (помощь другим людям)</span>
+        <h2 className="text-xs font-mono font-bold text-[#191A1C] uppercase tracking-widest border-b border-[#D8D2C5] pb-2">
+          Кейсы Консультанта (помощь другим людям)
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Case 1 */}
-          <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4 flex flex-col justify-between">
+          <div className="p-6 rounded-lg bg-[#FAF8F5] border border-[#D8D2C5] space-y-4 flex flex-col justify-between">
             <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="px-2.5 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-800 font-semibold">
-                  Кейс: Бухгалтерия на работе
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="px-2 py-0.5 rounded bg-[#E7E1D6] text-[#7A1F2B] font-bold">
+                  КЕЙС: БУХГАЛТЕРИЯ НА РАБОТЕ
                 </span>
-                <span className="text-slate-500 font-mono">30 сек</span>
+                <span className="text-[#6B6661]">30 сек</span>
               </div>
 
-              <h3 className="font-bold text-base text-white">
+              <h3 className="font-bold text-base text-[#191A1C]">
                 Поддельный интернет-банк в поиске (Коллега Камола)
               </h3>
 
-              <p className="text-xs text-slate-300 leading-relaxed italic bg-slate-950 p-3.5 rounded-2xl border border-slate-800">
+              <p className="text-xs text-[#5C5854] leading-relaxed italic bg-[#E7E1D6] p-3.5 rounded border border-[#D8D2C5]">
                 «Я набрала в поисковике название банка, кликнула на первую строчку. Выглядит как обычно, но антивирус выдал предупреждение о сертификате. Мне срочно надо оплатить счёт шефа, вводить пароль?»
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex flex-col sm:flex-row gap-2 font-mono">
               <button
                 onClick={() => handleOpenAudit('kamola')}
-                className="flex-1 py-3 px-3 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-800/60 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                className="flex-1 py-2.5 px-3 rounded text-xs font-bold bg-[#E7E1D6] hover:bg-[#D8D2C5] text-[#191A1C] border border-[#D8D2C5] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <FileText className="w-3.5 h-3.5" />
                 <span>Письменный аудит</span>
@@ -253,7 +250,7 @@ export const ConsultantView: React.FC<ConsultantViewProps> = ({
 
               <button
                 onClick={() => onStartScenario('phishing-browser-009')}
-                className="flex-1 py-3 px-3 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-md transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                className="flex-1 py-2.5 px-3 rounded text-xs font-bold bg-[#191A1C] hover:bg-[#7A1F2B] text-white transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
               >
                 <span>Симуляция</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -262,28 +259,28 @@ export const ConsultantView: React.FC<ConsultantViewProps> = ({
           </div>
 
           {/* Case 2 */}
-          <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4 flex flex-col justify-between">
+          <div className="p-6 rounded-lg bg-[#FAF8F5] border border-[#D8D2C5] space-y-4 flex flex-col justify-between">
             <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="px-2.5 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-800 font-semibold">
-                  Кейс: Семья и смартфон
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="px-2 py-0.5 rounded bg-[#E7E1D6] text-[#7A1F2B] font-bold">
+                  КЕЙС: СЕМЬЯ И СМАРТФОН
                 </span>
-                <span className="text-slate-500 font-mono">30 сек</span>
+                <span className="text-[#6B6661]">30 сек</span>
               </div>
 
-              <h3 className="font-bold text-base text-white">
+              <h3 className="font-bold text-base text-[#191A1C]">
                 Троян «CyberShield» (Младший брат Дилшод)
               </h3>
 
-              <p className="text-xs text-slate-300 leading-relaxed italic bg-slate-950 p-3.5 rounded-2xl border border-slate-800">
+              <p className="text-xs text-[#5C5854] leading-relaxed italic bg-[#E7E1D6] p-3.5 rounded border border-[#D8D2C5]">
                 «Мне вылезло предупреждение, что телефон заражён. Я скачал утилиту, а она просит включить "Специальные возможности" (Accessibility) и читать SMS. Нажимать "Разрешить"?»
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex flex-col sm:flex-row gap-2 font-mono">
               <button
                 onClick={() => handleOpenAudit('dilshod')}
-                className="flex-1 py-3 px-3 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-rose-300 border border-rose-800/60 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                className="flex-1 py-2.5 px-3 rounded text-xs font-bold bg-[#E7E1D6] hover:bg-[#D8D2C5] text-[#191A1C] border border-[#D8D2C5] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <FileText className="w-3.5 h-3.5" />
                 <span>Письменный аудит</span>
@@ -291,7 +288,7 @@ export const ConsultantView: React.FC<ConsultantViewProps> = ({
 
               <button
                 onClick={() => onStartScenario('malicious-apk-010')}
-                className="flex-1 py-3 px-3 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white shadow-md transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                className="flex-1 py-2.5 px-3 rounded text-xs font-bold bg-[#191A1C] hover:bg-[#7A1F2B] text-white transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
               >
                 <span>Симуляция</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -301,54 +298,53 @@ export const ConsultantView: React.FC<ConsultantViewProps> = ({
         </div>
       </div>
 
-      {/* Community Mechanic (Section 13 & AC-COMM-01..03) */}
-      <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+      {/* Community Protection Section */}
+      <div className="p-6 sm:p-8 rounded-lg bg-[#FAF8F5] border border-[#D8D2C5] space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#D8D2C5] pb-5">
           <div>
-            <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider mb-1">
-              <HeartHandshake className="w-4 h-4" />
-              <span>Образовательная миссия сообщества</span>
+            <div className="text-[11px] font-mono uppercase tracking-wider text-[#7A1F2B] font-bold mb-1">
+              Миссия цифровой солидарности
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-              «Теперь вы можете помочь защитить ещё 5 человек»
+            <h2 className="text-xl sm:text-2xl font-extrabold text-[#191A1C] tracking-tight">
+              «Теперь вы можете защитить ещё 5 человек»
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1">
-              Без финансового MLM и навязчивой рекламы. Пригласите близких пройти проверку социальной инженерии.
+            <p className="text-xs sm:text-sm text-[#5C5854] mt-1 max-w-xl leading-relaxed">
+              Без рекламы и спама. Поделитесь персональной защитной ссылкой, чтобы близкие прошли проверку на распознавание телефонного и онлайн-мошенничества.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-950 border border-slate-800 shrink-0">
-            <UserCheck className="w-8 h-8 text-cyan-400" />
+          <div className="flex items-center gap-3 p-3 rounded bg-[#E7E1D6] border border-[#D8D2C5] shrink-0 font-mono">
+            <UserCheck className="w-6 h-6 text-[#191A1C]" />
             <div>
-              <div className="text-[10px] text-slate-400 uppercase font-semibold">Обучено вами:</div>
-              <div className="text-xl font-bold text-white font-mono">{user?.invitedCount || 0} из 5 чел.</div>
+              <div className="text-[10px] text-[#6B6661] uppercase font-semibold">Обучено вами:</div>
+              <div className="text-lg font-bold text-[#191A1C]">{user?.invitedCount || 0} из 5 чел.</div>
             </div>
           </div>
         </div>
 
         {/* Quick Audience Share Buttons */}
-        <div className="space-y-3">
-          <label className="text-xs font-semibold text-slate-300 block">
+        <div className="space-y-3 font-mono">
+          <label className="text-xs font-bold text-[#191A1C] block uppercase tracking-wider">
             Кого вы хотите обезопасить в первую очередь?
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-            {['Семья', 'Друзья', 'Коллеги', 'Одногруппники', 'Сообщество'].map((aud) => (
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+            {['Семья', 'Друзья', 'Коллеги', 'Одногруппники', 'Соседи'].map((aud) => (
               <button
                 key={aud}
                 onClick={() => handleShareTo(aud)}
-                className={`py-2.5 px-3 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
+                className={`py-2 px-3 rounded border text-xs font-semibold transition-colors cursor-pointer ${
                   invitedAudience === aud
-                    ? 'bg-cyan-900/60 border-cyan-500 text-white shadow-md'
-                    : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700 hover:text-white'
+                    ? 'bg-[#191A1C] border-[#191A1C] text-white'
+                    : 'bg-white border-[#D8D2C5] text-[#5C5854] hover:border-[#191A1C] hover:text-[#191A1C]'
                 }`}
               >
-                👥 {aud}
+                {aud}
               </button>
             ))}
           </div>
 
           {invitedAudience && (
-            <p className="text-xs text-emerald-400 flex items-center gap-1.5 animate-fadeIn">
+            <p className="text-xs text-[#465447] flex items-center gap-1.5 animate-fadeIn font-sans">
               <Check className="w-3.5 h-3.5" />
               <span>Целевая группа выбрана: <strong>{invitedAudience}</strong>. Скопируйте персональную ссылку ниже:</span>
             </p>
@@ -356,21 +352,21 @@ export const ConsultantView: React.FC<ConsultantViewProps> = ({
         </div>
 
         {/* Invitation Link Input */}
-        <div className="space-y-2">
-          <label className="text-xs font-semibold text-slate-400 block">
-            Ваша защитная ссылка для приглашения:
+        <div className="space-y-1.5 font-mono">
+          <label className="text-xs font-bold text-[#6B6661] uppercase tracking-wider block">
+            Ваша персональная защитная ссылка:
           </label>
           <div className="flex items-center gap-2">
             <input
               readOnly
               value={referralUrl}
-              className="flex-1 px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-cyan-300 focus:outline-none select-all"
+              className="flex-1 px-3.5 py-2.5 rounded bg-white border border-[#D8D2C5] text-xs text-[#191A1C] focus:outline-none select-all font-mono"
             />
             <button
               onClick={copyLink}
-              className="px-5 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer shadow-md"
+              className="px-5 py-2.5 rounded font-mono text-xs font-bold uppercase tracking-wider bg-[#191A1C] hover:bg-[#7A1F2B] text-white transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer shadow-sm"
             >
-              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              <Check className="w-3.5 h-3.5" />
               <span>{copied ? 'Скопировано!' : 'Копировать'}</span>
             </button>
           </div>

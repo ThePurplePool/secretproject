@@ -53,15 +53,15 @@ export function App() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#070d1e] text-white flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="w-10 h-10 text-cyan-400 animate-spin" />
-        <p className="text-sm font-medium text-slate-400">Запуск платформы Anti-Scam Uzbekistan...</p>
+      <div className="min-h-screen bg-[#F6F3EC] text-[#171918] flex flex-col items-center justify-center space-y-3 font-sans">
+        <Loader2 className="w-8 h-8 text-[#19332F] animate-spin" />
+        <p className="text-xs font-mono tracking-wider uppercase text-[#626560]">Инициализация платформы Anti-Scam Uzbekistan...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#070d1e] text-slate-100 flex flex-col font-sans selection:bg-cyan-500/30">
+    <div className="min-h-screen bg-[#F6F3EC] text-[#171918] flex flex-col font-sans selection:bg-[#C83D2F]/15">
       {/* Top Navbar */}
       <Navbar
         currentView={currentView}
@@ -92,11 +92,12 @@ export function App() {
       <VirtualBalanceBar user={user} />
 
       {/* Main Content Area */}
-      <main className="flex-1 pb-16">
+      <main className="flex-1 pb-16 pt-1 sm:pt-4">
         {currentView === 'welcome' && (
           <WelcomeView
             onStartFirstScenario={() => handleStartScenario('fake-bank-telegram-001')}
             onExploreCatalog={() => setCurrentView('scenarios')}
+            onReport={() => setCurrentView('report')}
             user={user}
           />
         )}
@@ -135,9 +136,15 @@ export function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 bg-[#070d1e] py-6 px-4 text-center text-xs text-slate-500 space-y-1">
-        <p>Anti-Scam Uzbekistan — Интерактивная платформа практической защиты граждан от социальной инженерии.</p>
-        <p className="text-[11px] text-slate-600">Все сценарии являются безопасными контролируемыми обучающими симуляциями. Без реальных банковских данных и вредоносного ПО.</p>
+      <footer className="border-t border-[#D8D2C5] bg-[#E7E1D6]/50 py-8 px-6 text-center text-xs text-[#6B6661] space-y-1.5 font-sans">
+        <div className="flex items-center justify-center gap-2 font-mono text-[11px] text-[#191A1C] uppercase tracking-wider font-semibold">
+          <span>Республика Узбекистан</span>
+          <span>•</span>
+          <span>Национальная система противодействия мошенничеству</span>
+        </div>
+        <p className="max-w-2xl mx-auto text-[#6B6661] text-[11px] leading-relaxed">
+          Все сценарии на платформе являются контролируемыми обучающими симуляциями. Платформа не запрашивает и не хранит реальные платежные реквизиты, SMS-коды или пароли.
+        </p>
       </footer>
     </div>
   );

@@ -1,0 +1,11 @@
+// apps/web/package.json
+{
+  "name": "@antiscam/web",
+  "version": "1.0.0",
+  "description": "Anti-Scam Uzbekistan Web Client App",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix ../../client run dev",
+    "build": "npm --prefix ../../client run build"
+  }
+}

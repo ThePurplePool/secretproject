@@ -13,41 +13,39 @@ export const SocialInterface: React.FC<SocialInterfaceProps> = ({ scenario, onSe
   return (
     <div className="w-full max-w-2xl mx-auto rounded-3xl overflow-hidden border border-slate-700 bg-slate-950 shadow-2xl flex flex-col font-sans">
       {/* Social Feed Header */}
-      <div className="bg-slate-900 px-5 py-3.5 flex items-center justify-between border-b border-slate-800">
+      <div className="bg-slate-900 px-5 py-3 flex items-center justify-between border-b border-slate-800">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-600 to-pink-600 p-0.5">
-            <div className="w-full h-full bg-slate-900 rounded-full flex items-center justify-center font-bold text-white text-sm">
-              {sender.name.charAt(0)}
-            </div>
+          <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-white text-xs">
+            {sender.name.charAt(0)}
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <h3 className="font-semibold text-sm text-white">{sender.name}</h3>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400">Реклама</span>
+            <div className="flex items-center gap-2">
+              <h3 className="font-semibold text-xs text-white">{sender.name}</h3>
+              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 border border-slate-700">Реклама</span>
             </div>
-            <p className="text-xs text-slate-400">{sender.handleOrPhone} • 15 мин назад</p>
+            <p className="text-[11px] text-slate-400 font-mono">{sender.handleOrPhone} • 18 мин назад</p>
           </div>
         </div>
       </div>
 
       {/* Social Post Content */}
       <div className="p-5 bg-slate-950 space-y-4">
-        <p className="text-sm text-slate-200 leading-relaxed whitespace-pre-line">
+        <p className="text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-line font-sans">
           {content.text}
         </p>
 
         {/* Investment Banner Visual */}
-        <div className="rounded-2xl p-5 bg-gradient-to-br from-blue-950 via-slate-900 to-indigo-950 border border-blue-900/60 shadow-inner flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider">
+        <div className="rounded-xl p-5 bg-slate-900 border border-slate-800 flex flex-col gap-3">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider font-mono">
               <TrendingUp className="w-4 h-4" />
               <span>Национальная инвестиционная программа</span>
             </div>
-            <span className="text-xs font-mono font-bold text-emerald-400">+40% / НЕДЕЛЯ</span>
+            <span className="text-xs font-mono font-bold text-emerald-400">+40% ЕЖЕНЕДЕЛЬНО</span>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-slate-300">
-            «Автоматическая торговля природными ресурсами. Минимальный вклад 1 200 000 сум гарантирует возврат с прибылью.»
+          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-300">
+            «Автоматическая торговля природными ресурсами. Минимальный вклад 1 200 000 сум гарантирует возврат с гарантированной государственной надбавкой.»
           </div>
 
           {content.url && (

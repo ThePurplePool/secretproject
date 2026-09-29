@@ -44,7 +44,9 @@ export const DeliveryInterface: React.FC<DeliveryInterfaceProps> = ({ scenario, 
             <div className="h-0.5 flex-1 bg-emerald-500" />
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
             <div className="h-0.5 flex-1 bg-amber-500" />
-            <div className="w-3 h-3 rounded-full bg-amber-400 animate-ping" />
+            <div className="w-3 h-3 rounded-full bg-amber-400 flex items-center justify-center">
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-950" />
+            </div>
           </div>
 
           <div className="text-xs text-amber-300 flex items-center gap-1.5 font-medium">

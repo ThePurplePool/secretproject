@@ -1,0 +1,94 @@
+version: '3.8'
+
+# Development Docker Compose override with live-reload volume mounts
+services:
+  api-gateway:
+    volumes:
+      - ./services/api-gateway/src:/app/services/api-gateway/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development
+
+  auth-service:
+    volumes:
+      - ./services/auth-service/src:/app/services/auth-service/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development
+
+  user-service:
+    volumes:
+      - ./services/user-service/src:/app/services/user-service/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development
+
+  scenario-service:
+    volumes:
+      - ./services/scenario-service/src:/app/services/scenario-service/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development
+
+  simulation-service:
+    volumes:
+      - ./services/simulation-service/src:/app/services/simulation-service/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development
+
+  progress-service:
+    volumes:
+      - ./services/progress-service/src:/app/services/progress-service/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development
+
+  consultant-service:
+    volumes:
+      - ./services/consultant-service/src:/app/services/consultant-service/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development
+
+  certificate-service:
+    volumes:
+      - ./services/certificate-service/src:/app/services/certificate-service/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development
+
+  fraud-reporting-service:
+    volumes:
+      - ./services/fraud-reporting-service/src:/app/services/fraud-reporting-service/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development
+
+  fraud-intelligence-service:
+    volumes:
+      - ./services/fraud-intelligence-service/src:/app/services/fraud-intelligence-service/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development
+
+  voice-service:
+    volumes:
+      - ./services/voice-service/src:/app/services/voice-service/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development
+
+  notification-service:
+    volumes:
+      - ./services/notification-service/src:/app/services/notification-service/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development
+
+  media-service:
+    volumes:
+      - ./services/media-service/src:/app/services/media-service/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development

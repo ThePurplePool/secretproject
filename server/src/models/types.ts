@@ -16,7 +16,8 @@ export type ConsequenceType =
   | 'IDENTITY_RISK'
   | 'PRIVACY_RISK'
   | 'CREDENTIAL_EXPOSURE'
-  | 'OTP_EXPOSURE';
+  | 'OTP_EXPOSURE'
+  | 'SOCIAL_ENGINEERING';
 
 export type ActionDangerType = 'critical_danger' | 'warning' | 'safe' | 'report';
 

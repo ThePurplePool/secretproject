@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, PhoneOff, Mic, Volume2, ShieldAlert, Radio, AlertOctagon, CheckCircle2, RotateCw } from 'lucide-react';
+import { Phone, PhoneOff, Mic, Volume2, AlertOctagon, CheckCircle2, RotateCw } from 'lucide-react';
 import { api } from '../services/api';
 import { VoiceCallState } from '../types';
 
@@ -73,58 +73,58 @@ export const VoiceCallView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8 font-sans text-[#191A1C]">
       {/* View Header */}
-      <div className="text-center space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-950 border border-indigo-800 text-indigo-300 text-xs font-bold uppercase tracking-wider">
+      <div className="border-b border-[#D8D2C5] pb-6 space-y-2">
+        <div className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-[#7A1F2B] font-semibold">
           <Phone className="w-3.5 h-3.5" />
-          <span>AI Voice Simulator (Provider-Agnostic)</span>
+          <span>Голосовая ситуация • Противодействие вишингу</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-          Интерактивный симулятор голосовых атак
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-[#191A1C] tracking-tight">
+          Интерактивная отработка телефонной атаки
         </h1>
-        <p className="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">
-          Телефонные мошенники используют психологический напор, дефицит времени и шок. Тренируйте хладнокровие при подозрительных звонках.
+        <p className="text-xs sm:text-sm text-[#5C5854] max-w-xl leading-relaxed">
+          Телефонные мошенники используют психологический напор, дефицит времени и страх. Тренируйте хладнокровие и способность распознать манипуляцию в живом разговоре.
         </p>
       </div>
 
       {!activeCall ? (
         /* Scenario selector before call starts */
-        <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 space-y-6 shadow-xl">
-          <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
-            Выберите сценарий симуляции звонка:
+        <div className="p-6 sm:p-8 rounded-lg bg-[#FAF8F5] border border-[#D8D2C5] space-y-6 shadow-sm">
+          <label className="text-xs font-mono font-bold text-[#191A1C] uppercase tracking-wider block">
+            Выберите сценарий входящего вызова:
           </label>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div
               onClick={() => setSelectedScenario('fake-police-call-004')}
-              className={`p-5 rounded-2xl border cursor-pointer transition-all ${
+              className={`p-5 rounded-md border cursor-pointer transition-all ${
                 selectedScenario === 'fake-police-call-004'
-                  ? 'bg-indigo-950/60 border-indigo-500 shadow-md shadow-indigo-950/40 text-white'
-                  : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                  ? 'bg-[#E7E1D6] border-[#191A1C] text-[#191A1C]'
+                  : 'bg-white border-[#D8D2C5] text-[#5C5854] hover:border-[#8A8580]'
               }`}
             >
-              <div className="font-bold text-sm text-white mb-1">
-                🚨 Звонок «Следователя МВД»
+              <div className="font-bold text-sm text-[#191A1C] mb-1 font-mono">
+                Звонок «Следователя МВД»
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Шантаж с ложным ДТП близкого человека. Агрессивное требование срочного выкупа за 5 минут.
+              <p className="text-xs leading-relaxed">
+                Шантаж с ложным ДТП близкого человека. Агрессивное требование срочной передачи денег за 5 минут.
               </p>
             </div>
 
             <div
               onClick={() => setSelectedScenario('fake-bank-sms-002')}
-              className={`p-5 rounded-2xl border cursor-pointer transition-all ${
+              className={`p-5 rounded-md border cursor-pointer transition-all ${
                 selectedScenario === 'fake-bank-sms-002'
-                  ? 'bg-indigo-950/60 border-indigo-500 shadow-md shadow-indigo-950/40 text-white'
-                  : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                  ? 'bg-[#E7E1D6] border-[#191A1C] text-[#191A1C]'
+                  : 'bg-white border-[#D8D2C5] text-[#5C5854] hover:border-[#8A8580]'
               }`}
             >
-              <div className="font-bold text-sm text-white mb-1">
-                🏦 Звонок «Службы безопасности банка»
+              <div className="font-bold text-sm text-[#191A1C] mb-1 font-mono">
+                Звонок «Службы безопасности банка»
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Якобы несанкционированное списание. Психологическая манипуляция с целью выманить код из SMS.
+              <p className="text-xs leading-relaxed">
+                Якобы несанкционированное списание. Психологическая манипуляция с целью выманить 6-значный код из SMS.
               </p>
             </div>
           </div>
@@ -133,77 +133,73 @@ export const VoiceCallView: React.FC = () => {
             <button
               onClick={startCall}
               disabled={loading}
-              className="w-full py-4 rounded-2xl font-black text-sm bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-xl shadow-emerald-950/50 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3.5 rounded font-mono font-bold text-xs uppercase tracking-wider bg-[#191A1C] hover:bg-[#7A1F2B] text-white shadow-sm transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Phone className="w-5 h-5" />
-              <span>{loading ? 'Подключение линии...' : 'ПРИНЯТЬ ВХОДЯЩИЙ ЗВОНОК'}</span>
+              <Phone className="w-4 h-4" />
+              <span>{loading ? 'Установка соединения...' : 'ПРИНЯТЬ ВХОДЯЩИЙ ЗВОНОК'}</span>
             </button>
           </div>
         </div>
       ) : (
-        /* Active Call Screen */
-        <div className="rounded-3xl border-2 border-slate-700 bg-slate-950 overflow-hidden shadow-2xl p-6 sm:p-8 space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-rose-950 border border-rose-800 text-rose-300 text-xs font-semibold animate-pulse">
-              <Radio className="w-3.5 h-3.5" />
-              <span>ИДЁТ СИМУЛЯЦИЯ ЗВОНКА</span>
+        /* Active Call Screen (Smartphone interface) */
+        <div className="max-w-md mx-auto rounded-xl border border-[#D8D2C5] bg-[#FAF8F5] overflow-hidden shadow-lg p-6 space-y-6">
+          <div className="flex items-center justify-between border-b border-[#D8D2C5] pb-3 text-xs font-mono">
+            <div className="flex items-center gap-2 text-[#7A1F2B] font-bold uppercase">
+              <span className="w-2 h-2 rounded-full bg-[#7A1F2B] animate-pulse" />
+              <span>ИДЁТ РАЗГОВОР</span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => speakText(activeCall.currentAudioScript)}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-800 text-cyan-400 text-xs hover:bg-slate-700"
-              >
-                <Volume2 className="w-3.5 h-3.5" />
-                <span>{isSpeaking ? 'Звучит голос' : 'Озвучить'}</span>
-              </button>
+            <button
+              onClick={() => speakText(activeCall.currentAudioScript)}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#E7E1D6] text-[#191A1C] text-xs hover:bg-[#D8D2C5] transition-colors cursor-pointer"
+            >
+              <Volume2 className="w-3.5 h-3.5" />
+              <span>{isSpeaking ? 'Звучит голос' : 'Озвучить'}</span>
+            </button>
+          </div>
+
+          {/* Caller Identity */}
+          <div className="text-center space-y-2 py-2">
+            <div className="w-16 h-16 rounded-full bg-[#E7E1D6] border border-[#D8D2C5] flex items-center justify-center text-[#191A1C] mx-auto">
+              <Phone className="w-7 h-7 text-[#7A1F2B]" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-[#191A1C]">
+                {selectedScenario.includes('police') ? 'Следователь следственного отдела' : 'Служба безопасности банка'}
+              </h3>
+              <p className="text-xs text-[#6B6661] font-mono mt-0.5">
+                +998 71 200-XX-XX • Входящий
+              </p>
             </div>
           </div>
 
-          {/* Caller Profile */}
-          <div className="text-center space-y-2 py-4">
-            <div className="relative inline-block">
-              <div className="w-20 h-20 rounded-full bg-slate-900 border-2 border-rose-500 flex items-center justify-center text-rose-400 shadow-xl mx-auto">
-                <Phone className="w-8 h-8" />
-              </div>
-              <div className="absolute inset-0 rounded-full border-2 border-rose-500/40 animate-ping pointer-events-none" />
+          {/* Attacker Speech Transcript */}
+          <div className="p-4 rounded bg-[#E7E1D6] border border-[#D8D2C5] text-left space-y-2">
+            <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold uppercase text-[#6B6661]">
+              <Mic className="w-3.5 h-3.5 text-[#7A1F2B]" />
+              <span>Речь звонящего:</span>
             </div>
-
-            <h3 className="text-xl font-extrabold text-white tracking-tight">
-              {activeCall.callerName}
-            </h3>
-            <p className="text-xs text-slate-400 font-mono">
-              {activeCall.callerNumber}
+            <p className="text-xs sm:text-sm text-[#191A1C] leading-relaxed italic">
+              «{activeCall.currentAudioScript}»
             </p>
           </div>
 
-          {/* Spoken Transcript Bubble */}
-          <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 text-left">
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
-              <Mic className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Голос звонящего:</span>
-            </div>
-            <p className="text-sm text-slate-200 leading-relaxed italic">
-              "{activeCall.currentAudioScript}"
-            </p>
-          </div>
-
-          {/* User Response Options */}
+          {/* Action response options or Call result */}
           {!callEnded ? (
             <div className="space-y-3 pt-2">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                Как вы ответите на эту реплику?
-              </div>
+              <label className="text-xs font-mono font-bold text-[#191A1C] uppercase tracking-wider block">
+                Ваш ответ в трубку:
+              </label>
 
-              <div className="grid grid-cols-1 gap-2.5">
+              <div className="space-y-2">
                 {activeCall.availableUserReplies.map((reply) => (
                   <button
                     key={reply.id}
                     onClick={() => handleReply(reply.id)}
-                    className="text-left px-4 py-3 rounded-xl border transition-all text-xs font-medium bg-slate-900 border-slate-800 hover:border-cyan-500 hover:bg-slate-850 text-slate-200 hover:text-white flex items-center justify-between gap-3 group cursor-pointer"
+                    className="w-full text-left px-3.5 py-2.5 rounded bg-white hover:bg-[#E7E1D6] border border-[#D8D2C5] hover:border-[#191A1C] text-xs font-medium text-[#191A1C] transition-colors cursor-pointer flex items-center justify-between gap-2"
                   >
                     <span>{reply.text}</span>
-                    <span className="text-slate-500 group-hover:text-cyan-400">→</span>
+                    <span className="text-[#8A8580] font-mono">→</span>
                   </button>
                 ))}
               </div>
@@ -211,28 +207,44 @@ export const VoiceCallView: React.FC = () => {
               <div className="pt-2">
                 <button
                   onClick={endCallManual}
-                  className="w-full py-3 rounded-xl bg-rose-950/80 border border-rose-800 hover:bg-rose-900 text-rose-300 font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                  className="w-full py-2.5 rounded bg-[#7A1F2B] hover:bg-[#621822] text-white text-xs font-mono font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <PhoneOff className="w-4 h-4" />
-                  <span>Сбросить звонок без разговоров</span>
+                  <span>Сбросить трубку</span>
                 </button>
               </div>
             </div>
           ) : (
-            /* Call Summary */
-            <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 text-center space-y-4 animate-fadeIn">
-              <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
-              <h4 className="text-base font-bold text-white">Сеанс звонка завершён</h4>
-              <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
-                Вы отработали навык поведения при агрессивном телефонном давлении. Помните: ни один реальный сотрудник правоохранительных органов или банка не решает вопросы по телефону через перевод денег на карты физлиц.
-              </p>
+            <div className="p-5 rounded bg-[#FAF8F5] border border-[#D8D2C5] text-center space-y-4 animate-fadeIn">
+              <div className="w-12 h-12 rounded-full bg-[#E7E1D6] text-[#191A1C] flex items-center justify-center mx-auto">
+                {finalStatus === 'hangup_manual' || finalStatus === 'safe_hangup' ? (
+                  <CheckCircle2 className="w-6 h-6 text-[#465447]" />
+                ) : (
+                  <AlertOctagon className="w-6 h-6 text-[#7A1F2B]" />
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <h4 className="font-bold text-sm text-[#191A1C]">
+                  {finalStatus === 'hangup_manual' || finalStatus === 'safe_hangup'
+                    ? 'Вызов завершён: Вы проявили бдительность'
+                    : 'Вызов завершён: Ловушка сработала'}
+                </h4>
+                <p className="text-xs text-[#5C5854] leading-relaxed">
+                  {finalStatus === 'hangup_manual' || finalStatus === 'safe_hangup'
+                    ? 'Сброс звонка и перепроверка по официальному номеру организации — единственно верный алгоритм при звонках с признаками давления.'
+                    : 'Передача кодов подтверждения или соглашение на перевод средств привели бы к компрометации счетов.'}
+                </p>
+              </div>
 
               <button
-                onClick={() => setActiveCall(null)}
-                className="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-colors inline-flex items-center gap-2 cursor-pointer"
+                onClick={() => {
+                  setActiveCall(null);
+                  setCallEnded(false);
+                }}
+                className="px-5 py-2 rounded font-mono text-xs font-bold uppercase tracking-wider bg-[#191A1C] text-white hover:bg-[#7A1F2B] transition-colors cursor-pointer"
               >
-                <RotateCw className="w-3.5 h-3.5" />
-                <span>Выбрать другой сценарий звонка</span>
+                Пройти заново
               </button>
             </div>
           )}

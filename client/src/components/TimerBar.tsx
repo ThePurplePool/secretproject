@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Clock, AlertTriangle, Flame } from 'lucide-react';
+import { Clock, AlertTriangle } from 'lucide-react';
 import { ScenarioPressurePhrase } from '../types';
 
 interface TimerBarProps {
@@ -62,52 +62,55 @@ export const TimerBar: React.FC<TimerBarProps> = ({
 
   const percentage = Math.max(0, Math.min(100, (secondsLeft / timeLimit) * 100));
 
-  // Pressure color styling
-  let colorClass = 'from-cyan-500 to-blue-600';
-  let badgeColor = 'bg-cyan-950 text-cyan-400 border-cyan-800';
-  let statusText = 'Время на анализ ситуации';
+  // Controlled tension state colors per design system
+  let barBg = 'bg-[#191A1C]';
+  let badgeStyle = 'bg-[#E7E1D6] text-[#191A1C] border-[#D8D2C5]';
+  let statusText = 'Оценка ситуации';
 
   if (secondsLeft <= 5) {
-    colorClass = 'from-rose-600 to-red-700 animate-pulse';
-    badgeColor = 'bg-rose-950 text-rose-300 border-rose-800 animate-bounce';
-    statusText = 'КРИТИЧЕСКИЙ ДЕФИЦИТ ВРЕМЕНИ!';
+    barBg = 'bg-[#7A1F2B]';
+    badgeStyle = 'bg-[#7A1F2B] text-white border-[#7A1F2B]';
+    statusText = 'Критический дефицит времени';
   } else if (secondsLeft <= 12) {
-    colorClass = 'from-amber-500 to-orange-600';
-    badgeColor = 'bg-amber-950 text-amber-300 border-amber-800';
-    statusText = 'Психологическое давление нарастает';
+    barBg = 'bg-[#B87918]';
+    badgeStyle = 'bg-[#B87918] text-white border-[#B87918]';
+    statusText = 'Искусственная спешка';
   }
 
   return (
-    <div className="w-full space-y-2">
+    <div className="w-full space-y-2 font-mono">
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-2">
-          <Clock className={`w-4 h-4 ${secondsLeft <= 5 ? 'text-rose-400 animate-spin' : 'text-slate-400'}`} />
-          <span className="font-medium text-slate-300">{statusText}</span>
+          <Clock className="w-3.5 h-3.5 text-[#6B6661]" />
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#191A1C]">
+            {statusText}
+          </span>
         </div>
 
         <div className="flex items-center gap-2">
-          {secondsLeft <= 5 && <Flame className="w-4 h-4 text-rose-500 animate-pulse" />}
-          <span className={`font-mono font-bold text-sm px-2.5 py-0.5 rounded-full border ${badgeColor}`}>
+          <span className={`font-mono font-bold text-xs px-2.5 py-0.5 rounded border transition-colors ${badgeStyle}`}>
             00:{secondsLeft < 10 ? `0${secondsLeft}` : secondsLeft}
           </span>
         </div>
       </div>
 
-      {/* Progress bar */}
-      <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700/50">
+      {/* Progress track */}
+      <div className="h-2 w-full bg-[#D8D2C5] rounded-full overflow-hidden">
         <div
-          className={`h-full rounded-full bg-gradient-to-r ${colorClass} transition-all duration-1000 ease-linear`}
+          className={`h-full ${barBg} transition-all duration-1000 ease-linear rounded-full`}
           style={{ width: `${percentage}%` }}
         />
       </div>
 
       {/* Dynamic Psychological Pressure Warning */}
       {activePressure && (
-        <div className="flex items-start gap-2.5 px-3 py-2 rounded-lg bg-amber-950/40 border border-amber-800/50 text-amber-200 text-xs animate-fadeIn">
-          <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-          <div>
-            <span className="font-semibold text-amber-300">Сообщение злоумышленника: </span>
-            <span className="italic">{activePressure}</span>
+        <div className="flex items-start gap-2 p-2.5 rounded bg-[#FAF8F5] border border-[#D8D2C5] text-xs font-sans text-[#191A1C]">
+          <AlertTriangle className="w-3.5 h-3.5 text-[#B87918] shrink-0 mt-0.5" />
+          <div className="leading-snug">
+            <span className="font-semibold text-[#B87918] font-mono text-[11px] uppercase mr-1">
+              Психологический прессинг:
+            </span>
+            <span className="italic text-[#5C5854]">«{activePressure}»</span>
           </div>
         </div>
       )}

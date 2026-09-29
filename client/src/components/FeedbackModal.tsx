@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lightbulb, AlertTriangle, ShieldCheck, Target, RefreshCw, ArrowRight } from 'lucide-react';
+import { Lightbulb, AlertTriangle, ShieldCheck, Target, RefreshCw, ArrowRight, X } from 'lucide-react';
 import { ScenarioFeedback } from '../types';
 
 interface FeedbackModalProps {
@@ -16,68 +16,76 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
   onClose,
 }) => {
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
-      <div className="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-3xl overflow-hidden shadow-2xl p-6 sm:p-8 space-y-6">
-        {/* Title */}
-        <div className="border-b border-slate-800 pb-4">
-          <div className="flex items-center gap-2.5 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-1">
-            <Lightbulb className="w-4 h-4" />
-            <span>Экспертный анализ инцидента</span>
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto font-sans text-[#171918] animate-fadeIn">
+      <div className="w-full max-w-2xl bg-white border border-[#D9D6CF] rounded-xl shadow-2xl p-5 sm:p-8 space-y-6">
+        {/* Header */}
+        <div className="flex items-start justify-between border-b border-[#D9D6CF] pb-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-[#C83D2F] text-xs font-mono font-bold uppercase tracking-wider">
+              <Lightbulb className="w-4 h-4" />
+              <span>Экспертный разбор ситуации</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-extrabold text-[#171918] tracking-tight">
+              Разбор психологических ловушек и защита
+            </h2>
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-            Где была ловушка и как формируется защита?
-          </h2>
+          <button
+            onClick={onClose}
+            className="text-[#626560] hover:text-[#171918] p-1 rounded-md transition-colors cursor-pointer"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* 1 & 2: User Action & Danger */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-            <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <Target className="w-3.5 h-3.5 text-rose-400" />
+          <div className="p-4 rounded-lg bg-[#F6F3EC] border border-[#D9D6CF] space-y-1.5">
+            <h4 className="text-xs font-mono font-bold text-[#171918] uppercase tracking-wider flex items-center gap-1.5">
+              <Target className="w-3.5 h-3.5 text-[#C83D2F]" />
               <span>Суть атаки</span>
             </h4>
-            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#626560] leading-relaxed">
               {feedback.userActionSummary}
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-            <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
-              <span>В чём главная опасность?</span>
+          <div className="p-4 rounded-lg bg-[#F6F3EC] border border-[#D9D6CF] space-y-1.5">
+            <h4 className="text-xs font-mono font-bold text-[#171918] uppercase tracking-wider flex items-center gap-1.5">
+              <AlertTriangle className="w-3.5 h-3.5 text-[#C68A2E]" />
+              <span>Главная опасность</span>
             </h4>
-            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#626560] leading-relaxed">
               {feedback.whyDangerous}
             </p>
           </div>
         </div>
 
         {/* 3: Psychological Tricks */}
-        <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2.5">
-          <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <div className="p-4 rounded-lg bg-[#F6F3EC] border border-[#D9D6CF] space-y-2.5">
+          <h4 className="text-xs font-mono font-bold text-[#171918] uppercase tracking-wider">
             Психологические приёмы манипуляции:
           </h4>
           <div className="flex flex-wrap gap-2">
             {feedback.psychologicalTricks.map((trick, idx) => (
               <span
                 key={idx}
-                className="px-3 py-1.5 rounded-xl bg-purple-950/60 border border-purple-800/80 text-purple-300 text-xs font-medium"
+                className="px-2.5 py-1 rounded bg-white border border-[#D9D6CF] text-[#171918] text-xs font-mono"
               >
-                🧠 {trick}
+                • {trick}
               </span>
             ))}
           </div>
         </div>
 
         {/* 4: Suspicious Indicators */}
-        <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2.5">
-          <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-            Подозрительные признаки (Red Flags), на которые следовало обратить внимание:
+        <div className="p-4 rounded-lg bg-[#F6F3EC] border border-[#D9D6CF] space-y-2.5">
+          <h4 className="text-xs font-mono font-bold text-[#171918] uppercase tracking-wider">
+            Признаки опасности (Red Flags), на которые следовало обратить внимание:
           </h4>
-          <ul className="space-y-1.5 text-xs text-slate-300">
+          <ul className="space-y-1.5 text-xs text-[#626560]">
             {feedback.suspiciousIndicators.map((ind, idx) => (
               <li key={idx} className="flex items-start gap-2">
-                <span className="text-rose-400 mt-0.5">•</span>
+                <span className="text-[#C83D2F] font-bold mt-0.5">•</span>
                 <span>{ind}</span>
               </li>
             ))}
@@ -85,37 +93,37 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
         </div>
 
         {/* 5 & 6: Safe Algorithm & Real Life Rule */}
-        <div className="p-4 rounded-2xl bg-gradient-to-br from-cyan-950/60 to-slate-950 border border-cyan-800/60 space-y-2">
-          <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider">
-            <ShieldCheck className="w-4 h-4" />
-            <span>Золотое правило кибергигиены в Узбекистане:</span>
+        <div className="p-4 rounded-lg bg-white border-2 border-[#47705D] space-y-2">
+          <div className="flex items-center gap-2 text-[#47705D] font-mono font-bold text-xs uppercase tracking-wider">
+            <ShieldCheck className="w-4 h-4 text-[#47705D] shrink-0" />
+            <span>Главное правило кибергигиены в Узбекистане:</span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+          <p className="text-xs sm:text-sm text-[#171918] leading-relaxed font-semibold">
             {feedback.realLifeRule}
           </p>
-          <p className="text-xs text-slate-400 italic pt-1">
-            Правильный алгоритм: {feedback.correctActionAdvice}
-          </p>
+          <div className="text-xs text-[#626560] font-mono pt-1 border-t border-[#D9D6CF] mt-2">
+            Рекомендуемый алгоритм: <span className="text-[#171918] font-medium">{feedback.correctActionAdvice}</span>
+          </div>
         </div>
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-          {retryScenarioId && (
+          {retryScenarioId ? (
             <button
               onClick={() => onRetry(retryScenarioId)}
-              className="w-full sm:flex-1 py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:flex-1 py-3 px-4 rounded-md font-semibold text-xs uppercase tracking-wider bg-[#C83D2F] hover:bg-[#a82d21] text-white shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              <RefreshCw className="w-4 h-4" />
-              <span>ЗАКРЕПИТЬ НАВЫК: НОВЫЙ ВЫЗОВ</span>
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Закрепить навык (новый вызов)</span>
             </button>
-          )}
+          ) : null}
 
           <button
             onClick={onClose}
-            className="w-full sm:flex-1 py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full sm:flex-1 py-3 px-4 rounded-md font-semibold text-xs uppercase tracking-wider bg-[#19332F] hover:bg-[#122623] text-white transition-colors flex items-center justify-center gap-2 cursor-pointer"
           >
-            <span>ВЕРНУТЬСЯ К КАТАЛОГУ</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>Вернуться к сценариям</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>

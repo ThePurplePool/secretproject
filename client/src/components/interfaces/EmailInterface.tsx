@@ -42,35 +42,24 @@ export const EmailInterface: React.FC<EmailInterfaceProps> = ({ scenario, onSele
         </h2>
 
         {/* Sender details */}
-        <div className="flex items-start justify-between p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+        <div className="flex items-start justify-between p-3.5 rounded-lg bg-slate-900 border border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-cyan-950 border border-cyan-800 flex items-center justify-center text-cyan-300 font-bold">
+            <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 font-bold text-xs">
               {sender.name.charAt(0)}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm text-slate-100">{sender.name}</span>
-                <span className="text-xs text-slate-400 font-mono">&lt;{sender.handleOrPhone}&gt;</span>
+                <span className="font-semibold text-xs text-slate-100">{sender.name}</span>
+                <span className="text-[11px] text-slate-400 font-mono select-all">&lt;{sender.handleOrPhone}&gt;</span>
               </div>
-              <div className="text-xs text-slate-400">Кому: вам &lt;citizen@uz.net&gt;</div>
+              <div className="text-[11px] text-slate-500 font-mono mt-0.5">Кому: вам &lt;citizen@uz.net&gt;</div>
             </div>
           </div>
 
-          <div className="text-xs text-slate-500">
+          <div className="text-[11px] text-slate-500 font-mono">
             Сегодня, 10:14
           </div>
         </div>
-
-        {/* Domain notice box */}
-        {sender.officialDomain && (
-          <div className="p-3 rounded-lg bg-slate-900/60 border border-slate-800 text-xs text-slate-400 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-cyan-400 shrink-0" />
-            <span>
-              Заявленный официальный ресурс: <strong className="text-cyan-300">{sender.officialDomain}</strong>.
-              Проверьте фактический e-mail отправителя.
-            </span>
-          </div>
-        )}
 
         {/* Content text */}
         <div className="p-5 rounded-xl bg-slate-900 border border-slate-800/80 text-sm text-slate-200 leading-relaxed space-y-4 whitespace-pre-line">

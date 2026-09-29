@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { api } from '../services/api';
 import { UserProfile, Certificate } from '../types';
-import { LogIn, UserPlus, X, Shield, Lock, User, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { LogIn, UserPlus, X, Shield, Lock, User, AlertCircle } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -53,37 +53,37 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
-      <div className="w-full max-w-md bg-slate-900 border border-slate-700 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl relative">
+    <div className="fixed inset-0 z-50 bg-[#191A1C]/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn font-sans text-[#191A1C]">
+      <div className="w-full max-w-md bg-[#FAF8F5] border border-[#D8D2C5] rounded-lg p-6 sm:p-8 space-y-6 shadow-xl relative">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+          className="absolute top-5 right-5 p-1.5 rounded text-[#6B6661] hover:text-[#191A1C] hover:bg-[#E7E1D6] transition-colors cursor-pointer"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
         {/* Modal Header */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-800 flex items-center justify-center text-cyan-400 shadow">
-            <Shield className="w-5 h-5" />
+        <div className="flex items-center gap-3 border-b border-[#D8D2C5] pb-4">
+          <div className="w-9 h-9 rounded bg-[#191A1C] flex items-center justify-center text-white font-bold">
+            <Shield className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="font-bold text-lg text-white">
-              {mode === 'login' ? 'Вход в аккаунт' : 'Регистрация'}
+            <h3 className="font-extrabold text-base sm:text-lg text-[#191A1C] tracking-tight">
+              {mode === 'login' ? 'Вход в аккаунт' : 'Регистрация оператора'}
             </h3>
-            <p className="text-xs text-slate-400">
-              Сохранение вашего прогресса и сертификатов
+            <p className="text-xs text-[#5C5854]">
+              Сохранение профиля, статистики и сертификатов
             </p>
           </div>
         </div>
 
         {/* Mode Switch Tabs */}
-        <div className="flex items-center p-1 rounded-xl bg-slate-950 border border-slate-800 text-xs font-semibold">
+        <div className="flex items-center p-1 rounded bg-[#E7E1D6] border border-[#D8D2C5] text-xs font-mono font-medium">
           <button
             type="button"
             onClick={() => { setMode('login'); setError(null); }}
-            className={`flex-1 py-2 rounded-lg transition-colors cursor-pointer ${
-              mode === 'login' ? 'bg-slate-800 text-cyan-400' : 'text-slate-400 hover:text-white'
+            className={`flex-1 py-1.5 rounded transition-colors cursor-pointer ${
+              mode === 'login' ? 'bg-[#191A1C] text-white font-bold' : 'text-[#6B6661] hover:text-[#191A1C]'
             }`}
           >
             Войти
@@ -91,8 +91,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <button
             type="button"
             onClick={() => { setMode('register'); setError(null); }}
-            className={`flex-1 py-2 rounded-lg transition-colors cursor-pointer ${
-              mode === 'register' ? 'bg-slate-800 text-cyan-400' : 'text-slate-400 hover:text-white'
+            className={`flex-1 py-1.5 rounded transition-colors cursor-pointer ${
+              mode === 'register' ? 'bg-[#191A1C] text-white font-bold' : 'text-[#6B6661] hover:text-[#191A1C]'
             }`}
           >
             Регистрация
@@ -101,16 +101,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Error Alert */}
         {error && (
-          <div className="p-3 rounded-xl bg-rose-950/70 border border-rose-800 text-rose-300 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+          <div className="p-3 rounded bg-[#7A1F2B]/10 border border-[#7A1F2B]/30 text-[#7A1F2B] text-xs flex items-center gap-2 font-mono">
+            <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-slate-300 flex items-center gap-1.5">
-              <User className="w-3.5 h-3.5 text-cyan-400" />
+            <label className="text-xs font-mono font-bold text-[#191A1C] uppercase tracking-wider flex items-center gap-1.5">
+              <User className="w-3.5 h-3.5 text-[#6B6661]" />
               <span>Имя пользователя (Логин)</span>
             </label>
             <input
@@ -119,13 +119,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               placeholder="Например: jasur_dev"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 text-xs focus:border-cyan-500 focus:outline-none"
+              className="w-full px-3.5 py-2 rounded bg-white border border-[#D8D2C5] text-[#191A1C] text-xs font-mono focus:border-[#7A1F2B] focus:outline-none"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-slate-300 flex items-center gap-1.5">
-              <Lock className="w-3.5 h-3.5 text-cyan-400" />
+            <label className="text-xs font-mono font-bold text-[#191A1C] uppercase tracking-wider flex items-center gap-1.5">
+              <Lock className="w-3.5 h-3.5 text-[#6B6661]" />
               <span>Пароль {mode === 'register' && '(не менее 6 знаков)'}</span>
             </label>
             <input
@@ -134,24 +134,24 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 text-xs focus:border-cyan-500 focus:outline-none"
+              className="w-full px-3.5 py-2 rounded bg-white border border-[#D8D2C5] text-[#191A1C] text-xs font-mono focus:border-[#7A1F2B] focus:outline-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 rounded-xl font-bold text-xs bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white shadow-lg shadow-cyan-950/50 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
+            className="w-full py-3 rounded font-mono font-bold text-xs uppercase tracking-wider bg-[#191A1C] hover:bg-[#7A1F2B] text-white shadow-sm transition-colors flex items-center justify-center gap-2 cursor-pointer mt-2"
           >
             {mode === 'login' ? <LogIn className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
-            <span>{loading ? 'Обработка...' : mode === 'login' ? 'ВОЙТИ' : 'ЗАРЕГИСТРИРОВАТЬСЯ'}</span>
+            <span>{loading ? 'Обработка...' : mode === 'login' ? 'ВОЙТИ В СИСТЕМУ' : 'ЗАРЕГИСТРИРОВАТЬСЯ'}</span>
           </button>
         </form>
 
         {currentUser && (
-          <div className="pt-2 border-t border-slate-800 text-center">
-            <span className="text-[11px] text-slate-500">
-              Текущий сеанс: <strong className="text-slate-300">{currentUser.username}</strong>
+          <div className="pt-2 border-t border-[#D8D2C5] text-center">
+            <span className="text-[11px] text-[#6B6661] font-mono">
+              Текущий сеанс: <strong className="text-[#191A1C]">{currentUser.username}</strong>
             </span>
           </div>
         )}

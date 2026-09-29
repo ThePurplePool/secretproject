@@ -1,19 +1,333 @@
 version: '3.8'
 
+networks:
+  anti-scam-network:
+    name: anti-scam-network
+    driver: bridge
+
+volumes:
+  postgres_data:
+  auth_data:
+  user_data:
+  scenario_data:
+  simulation_data:
+  progress_data:
+  consultant_data:
+  certificate_data:
+  fraud_data:
+  intelligence_data:
+  voice_data:
+  media_data:
+
 services:
-  antiscam-app:
+  # ─── DATABASE LAYER (PostgreSQL) ───────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: antiscam-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-antiscam}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-antiscam_secure_pass_2026}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/postgres/init-databases.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U antiscam"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ─── API GATEWAY (Single Public Entry Point) ──────────────
+  api-gateway:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: antiscam_uzbekistan
+      dockerfile: infrastructure/docker/service.Dockerfile
+    container_name: antiscam-api-gateway
     restart: unless-stopped
     ports:
       - "5000:5000"
     environment:
-      - NODE_ENV=production
-      - PORT=5000
-    volumes:
-      - antiscam_data:/app/data
+      PORT: 5000
+      NODE_ENV: production
+      AUTH_SERVICE_URL: http://auth-service:3001
+      USER_SERVICE_URL: http://user-service:3002
+      SCENARIO_SERVICE_URL: http://scenario-service:3003
+      SIMULATION_SERVICE_URL: http://simulation-service:3004
+      PROGRESS_SERVICE_URL: http://progress-service:3005
+      CONSULTANT_SERVICE_URL: http://consultant-service:3006
+      CERTIFICATE_SERVICE_URL: http://certificate-service:3007
+      FRAUD_REPORTING_SERVICE_URL: http://fraud-reporting-service:3008
+      FRAUD_INTEL_SERVICE_URL: http://fraud-intelligence-service:3009
+      VOICE_SERVICE_URL: http://voice-service:3010
+      NOTIFICATION_SERVICE_URL: http://notification-service:3011
+      MEDIA_SERVICE_URL: http://media-service:3012
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-anti-scam-internal-secret-2026}
+    depends_on:
+      - auth-service
+      - user-service
+      - scenario-service
+      - simulation-service
+      - progress-service
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:5000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
-volumes:
-  antiscam_data:
+  # ─── INTERNAL MICROSERVICES (No Host Ports Exposed) ─────────
+  auth-service:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/service.Dockerfile
+    container_name: antiscam-auth-service
+    restart: unless-stopped
+    command: ["node", "-r", "ts-node/register", "services/auth-service/src/index.ts"]
+    environment:
+      PORT: 3001
+      NODE_ENV: production
+      USER_SERVICE_URL: http://user-service:3002
+      PROGRESS_SERVICE_URL: http://progress-service:3005
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-anti-scam-internal-secret-2026}
+    volumes:
+      - auth_data:/app/data/auth
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3001/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  user-service:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/service.Dockerfile
+    container_name: antiscam-user-service
+    restart: unless-stopped
+    command: ["node", "-r", "ts-node/register", "services/user-service/src/index.ts"]
+    environment:
+      PORT: 3002
+      NODE_ENV: production
+      PROGRESS_SERVICE_URL: http://progress-service:3005
+      CERTIFICATE_SERVICE_URL: http://certificate-service:3007
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-anti-scam-internal-secret-2026}
+    volumes:
+      - user_data:/app/data/user
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3002/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  scenario-service:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/service.Dockerfile
+    container_name: antiscam-scenario-service
+    restart: unless-stopped
+    command: ["node", "-r", "ts-node/register", "services/scenario-service/src/index.ts"]
+    environment:
+      PORT: 3003
+      NODE_ENV: production
+    volumes:
+      - scenario_data:/app/data/scenarios
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3003/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  simulation-service:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/service.Dockerfile
+    container_name: antiscam-simulation-service
+    restart: unless-stopped
+    command: ["node", "-r", "ts-node/register", "services/simulation-service/src/index.ts"]
+    environment:
+      PORT: 3004
+      NODE_ENV: production
+      SCENARIO_SERVICE_URL: http://scenario-service:3003
+      PROGRESS_SERVICE_URL: http://progress-service:3005
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-anti-scam-internal-secret-2026}
+    volumes:
+      - simulation_data:/app/data/simulations
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3004/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  progress-service:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/service.Dockerfile
+    container_name: antiscam-progress-service
+    restart: unless-stopped
+    command: ["node", "-r", "ts-node/register", "services/progress-service/src/index.ts"]
+    environment:
+      PORT: 3005
+      NODE_ENV: production
+      CERTIFICATE_SERVICE_URL: http://certificate-service:3007
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-anti-scam-internal-secret-2026}
+    volumes:
+      - progress_data:/app/data/progress
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3005/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  consultant-service:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/service.Dockerfile
+    container_name: antiscam-consultant-service
+    restart: unless-stopped
+    command: ["node", "-r", "ts-node/register", "services/consultant-service/src/index.ts"]
+    environment:
+      PORT: 3006
+      NODE_ENV: production
+      CERTIFICATE_SERVICE_URL: http://certificate-service:3007
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-anti-scam-internal-secret-2026}
+    volumes:
+      - consultant_data:/app/data/consultant
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3006/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  certificate-service:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/service.Dockerfile
+    container_name: antiscam-certificate-service
+    restart: unless-stopped
+    command: ["node", "-r", "ts-node/register", "services/certificate-service/src/index.ts"]
+    environment:
+      PORT: 3007
+      NODE_ENV: production
+    volumes:
+      - certificate_data:/app/data/certificates
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3007/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  fraud-reporting-service:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/service.Dockerfile
+    container_name: antiscam-fraud-reporting-service
+    restart: unless-stopped
+    command: ["node", "-r", "ts-node/register", "services/fraud-reporting-service/src/index.ts"]
+    environment:
+      PORT: 3008
+      NODE_ENV: production
+      FRAUD_INTEL_SERVICE_URL: http://fraud-intelligence-service:3009
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-anti-scam-internal-secret-2026}
+    volumes:
+      - fraud_data:/app/data/fraud_reports
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3008/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  fraud-intelligence-service:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/service.Dockerfile
+    container_name: antiscam-fraud-intel-service
+    restart: unless-stopped
+    command: ["node", "-r", "ts-node/register", "services/fraud-intelligence-service/src/index.ts"]
+    environment:
+      PORT: 3009
+      NODE_ENV: production
+    volumes:
+      - intelligence_data:/app/data/intelligence
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3009/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  voice-service:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/service.Dockerfile
+    container_name: antiscam-voice-service
+    restart: unless-stopped
+    command: ["node", "-r", "ts-node/register", "services/voice-service/src/index.ts"]
+    environment:
+      PORT: 3010
+      NODE_ENV: production
+    volumes:
+      - voice_data:/app/data/voice
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3010/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/service.Dockerfile
+    container_name: antiscam-notification-service
+    restart: unless-stopped
+    command: ["node", "-r", "ts-node/register", "services/notification-service/src/index.ts"]
+    environment:
+      PORT: 3011
+      NODE_ENV: production
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3011/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  media-service:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/service.Dockerfile
+    container_name: antiscam-media-service
+    restart: unless-stopped
+    command: ["node", "-r", "ts-node/register", "services/media-service/src/index.ts"]
+    environment:
+      PORT: 3012
+      NODE_ENV: production
+    volumes:
+      - media_data:/app/data/media_assets
+    networks:
+      - anti-scam-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3012/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3

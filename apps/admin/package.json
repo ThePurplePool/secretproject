@@ -1,0 +1,11 @@
+// apps/admin/package.json
+{
+  "name": "@antiscam/admin",
+  "version": "1.0.0",
+  "description": "Anti-Scam Uzbekistan Admin & Security Analyst Portal",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix ../../client run dev",
+    "build": "npm --prefix ../../client run build"
+  }
+}

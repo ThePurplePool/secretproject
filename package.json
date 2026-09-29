@@ -6,8 +6,10 @@
   "scripts": {
     "dev:server": "npm --prefix server run dev",
     "dev:client": "npm --prefix client run dev",
+    "dev:services": "node runner.js",
+    "start:services": "node runner.js",
     "build:server": "npm --prefix server run build",
     "build:client": "npm --prefix client run build",
-    "start": "npm --prefix server run start"
+    "start": "node runner.js"
   }
 }
